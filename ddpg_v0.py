@@ -23,7 +23,7 @@ import tensorflow.keras as K
 
 #%%
 class Memory:
-    """A FIFO experiene reply buffer.
+    """A FIFO experiene replay buffer.
     """
     def __init__(self,obs_dim,act_dim,size):
         self.states = np.zeros([size, obs_dim], dtype=np.float32)
