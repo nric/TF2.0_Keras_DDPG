@@ -69,7 +69,7 @@ class DDPGAgent:
         #constants
         self.ACT_LIMIT = act_limit #requiered for clipping prediciton aciton
         self.GAMMA = 0.99 #discounted reward factor
-        self.TAU = 0.995 #soft update factor
+        self.TAU = 0.005 #soft update factor
         self.BUFFER_SIZE = int(1e6) #total replay buffer size. Should be quite large.
         self.BATCH_SIZE = 100 #training batch size. 
         self.ACT_NOISE_SCALE = 0.1 #the noise is for exploration. simple randomnormal is used here insead of OUNoise like in the orgininal paper an din many examples. OUNoise does not bring much benefit.
