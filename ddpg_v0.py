@@ -184,11 +184,11 @@ class DDPGAgent:
         """
         #Critic soft update:
         weights_critic_local = np.array(self.critic.get_weights())
-        weights_critic_target = np.array(self.critic.get_weights())
+        weights_critic_target = np.array(self.critic_target.get_weights())
         self.critic.set_weights(self.TAU * weights_critic_local + (1.0-self.TAU)*weights_critic_target)
         #Actor soft update
         weights_actor_local = np.array(self.actor.get_weights())
-        weights_actor_target = np.array(self.actor.get_weights())
+        weights_actor_target = np.array(self.actor_target.get_weights())
         self.actor_target.set_weights(self.TAU * weights_actor_local + (1.0-self.TAU)*weights_actor_target)
 
 
