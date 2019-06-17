@@ -103,7 +103,7 @@ class DDPGAgent:
 
     def _ddpg_actor_loss(self,y_true,y_pred):
         #y_true is Q_prediction = Q_critic_predicted(s,a_actor_predicted)
-        return -K.backend.mean(y_pred)
+        return -K.backend.mean(y_true)
     
 
     def get_action(self,states,noise=None):
