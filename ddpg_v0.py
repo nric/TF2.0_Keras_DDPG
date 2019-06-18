@@ -107,11 +107,19 @@ class DDPGAgent:
     
 
     def get_action(self,states,noise=None):
+        """Returns an action (=prediction of local actor) given a state.
+        Adds a gaussion noise for exploration. 
+        params:
+            :state: the state batch
+            :noise: add noise. If None defaults self.ACT_NOISE_SCALE is used.
+                    If 0 ist passed, no noise is added and clipping passed
+        """
         if noise is None: noise = self.ACT_NOISE_SCALE
         if len(states.shape) == 1: states = states.reshape(1,-1)
         action = self.actor.predict_on_batch(states)
-        action += noise * np.random.randn(self.action_n)
-        action = np.clip(action, -self.ACT_LIMIT, self.ACT_LIMIT)
+        if noise != 0:
+            action += noise * np.random.randn(self.action_n)
+            action = np.clip(action, -self.ACT_LIMIT, self.ACT_LIMIT)
         return action
     
 
@@ -122,7 +130,7 @@ class DDPGAgent:
     def train_actor(self,states,actions):
         #Q_predictions can not be calculated in keras loss function because it depends on the prediction
         #of another model (critic) with the prediction of this model (actions) as a parameter.
-        actions_predict = self.get_action(states)
+        actions_predict = self.get_action(states, noise=0)
         Q_predictions = self.get_Q(states,actions_predict)
         self.actor.train_on_batch(states,Q_predictions)
     
@@ -159,7 +167,7 @@ class DDPGAgent:
     def train_critic(self,states,next_states,actions,rewards,dones):
         """Train the critic using a trajectory batch from memory.
         This is part of the core algorithm. https://spinningup.openai.com/en/latest/algorithms/ddpg.html
-        The loss of the critic requries the predicted Q(s,a) which is the prediction of the critic.
+        The loss of the critic requires the predicted Q(s,a) which is the prediction of the critic.
         """
         next_actions = self.get_target_action(next_states)
         Q_target_prediction = self.get_target_Q(next_states,next_actions)
